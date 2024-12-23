@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "weather"
+version = "0.1.0"
+description = ""
+authors = ["hajyhia <shehab.hajyhia@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.3"
+streamlit = "^1.41.1"
+requests = "^2.32.3"
+seaborn = "^0.13.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
