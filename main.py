@@ -1,5 +1,8 @@
 import streamlit as st
 import requests
+import datetime
+import pytz
+from timezonefinder import TimezoneFinder
 
 # Constants
 API_KEY = st.secrets["general"]["api_key"]
@@ -7,16 +10,6 @@ BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 
 
 def fetch_weather(city_name):
-    """
-    Fetches weather data for the given city.
-
-    Args:
-        city_name (str): Name of the city.
-
-    Returns:
-        dict: Weather information if successful, None otherwise.
-    """
-
     params = {
         "q": city_name,
         "appid": API_KEY,
@@ -32,13 +25,28 @@ def fetch_weather(city_name):
         return None
 
 
-def display_weather(weather_data):
-    """
-    Displays weather information in a user-friendly format.
+def dispaly_weather_location_time(weather_data_coordinators):
+    if weather_data_coordinators:
+        local_time = datetime.datetime.now()
+        formatted_local_time = local_time.strftime("%Y-%m-%d %H:%M:%S")
 
-    Args:
-        weather_data (dict): Weather data from the API.
-    """
+        # Find timezone
+        tf = TimezoneFinder()
+        timezone = tf.timezone_at(lat=weather_data_coordinators["lat"], lng=weather_data_coordinators["lon"])
+
+        # Get the current time in the timezone
+        tz = pytz.timezone(timezone)
+        current_time = datetime.datetime.now(tz)
+        formatted_current_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        st.subheader(f"Your local date and time: {formatted_local_time}")
+        st.subheader(f"Date and time in '{timezone}': {formatted_current_time}")
+
+    else:
+        print("Unable to display weather data.")
+
+
+def display_weather(weather_data):
     if weather_data:
         city = weather_data["name"]
         temp = weather_data["main"]["temp"]
@@ -70,9 +78,9 @@ def main():
     if st.button("Submit"):
         # Display a personalized message
         if city_name:
-            # st.success(f"Hello, {name}! You are {age} years old.")
             weather_data = fetch_weather(city_name)
             display_weather(weather_data)
+            dispaly_weather_location_time(weather_data["coord"])
         else:
             st.warning("Please enter city name to see the message!")
 

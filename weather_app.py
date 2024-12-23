@@ -1,8 +1,12 @@
 import requests
+import datetime
+import pytz
+from timezonefinder import TimezoneFinder
 
 # Constants
 API_KEY = "a97bfd1e514bbcb662cacbee64cb8eab"  # Replace with your OpenWeatherMap API key
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
+
 
 def fetch_weather(city_name):
     """
@@ -28,6 +32,26 @@ def fetch_weather(city_name):
         print(f"Error fetching weather data: {e}")
         return None
 
+
+def dispaly_weather_location_time(weather_data_coordinators):
+    if weather_data_coordinators:
+        local_time = datetime.datetime.now()
+        formatted_date = local_time.strftime("%Y-%m-%d %H:%M:%S")  # Example: '2024-12-23 14:30:45'
+        print(f"Your local date and time:: {formatted_date}")
+
+        # Find timezone
+        tf = TimezoneFinder()
+        timezone = tf.timezone_at(lat=weather_data_coordinators["lat"], lng=weather_data_coordinators["lon"])
+
+        # Get the current time in the timezone
+        tz = pytz.timezone(timezone)
+        current_time = datetime.datetime.now(tz)
+        formatted_current_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
+        print(f"Date and time in {timezone}: {formatted_current_time}")
+    else:
+        print("Unable to display weather data.")
+
+
 def display_weather(weather_data):
     """
     Displays weather information in a user-friendly format.
@@ -50,6 +74,7 @@ def display_weather(weather_data):
     else:
         print("Unable to display weather data.")
 
+
 def main():
     """
     Main function to run the weather app.
@@ -58,6 +83,8 @@ def main():
     city_name = input("Enter the name of the city: ").strip()
     weather_data = fetch_weather(city_name)
     display_weather(weather_data)
+    dispaly_weather_location_time(weather_data["coord"])
+
 
 if __name__ == "__main__":
     main()
