@@ -6,6 +6,7 @@ from timezonefinder import TimezoneFinder
 # Constants
 API_KEY = "a97bfd1e514bbcb662cacbee64cb8eab"  # Replace with your OpenWeatherMap API key
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
+BEAUFORT_SCALE_URL = "https://openweathermap.org/themes/openweathermap/assets/vendor/mosaic/data/wind-speed-new-data.json"
 
 
 def fetch_weather(city_name):
@@ -26,6 +27,16 @@ def fetch_weather(city_name):
 
     try:
         response = requests.get(BASE_URL, params=params)
+        response.raise_for_status()  # Raise an error for HTTP codes 4xx/5xx
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching weather data: {e}")
+        return None
+
+
+def fetch_beaufort_scale():
+    try:
+        response = requests.get(BEAUFORT_SCALE_URL)
         response.raise_for_status()  # Raise an error for HTTP codes 4xx/5xx
         return response.json()
     except requests.exceptions.RequestException as e:
