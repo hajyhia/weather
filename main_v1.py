@@ -79,7 +79,7 @@ def display_weather(weather_data, local_timezone):
         humidity = weather_data["main"]["humidity"]
         wind_speed = weather_data["wind"]["speed"]
 
-        weather_location_time = weather_api.get_weather_location_time(weather_data["dt"], weather_data["coord"])
+        weather_location_time = weather_api.get_weather_location_time(weather_data["coord"])
         if local_timezone:
             formatted_time_display = weather_location_time["local"]["time"]
         else:

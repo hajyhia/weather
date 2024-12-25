@@ -41,9 +41,9 @@ def calculate_beaufort_scale(wind_speed):
         return None
 
 
-def get_weather_location_time(weather_data_time, weather_data_coordinators):
+def get_weather_location_time(weather_data_coordinators):
     if weather_data_coordinators:
-        local_time = datetime.datetime.fromtimestamp(weather_data_time)
+        local_time = datetime.datetime.now()
         formatted_local_time = local_time.strftime("%A, %d %B %Y at %I:%M %p")
 
         # Find timezone
@@ -52,7 +52,7 @@ def get_weather_location_time(weather_data_time, weather_data_coordinators):
 
         # Get the current time in the timezone
         tz = pytz.timezone(timezone)
-        current_time = datetime.datetime.fromtimestamp(weather_data_time, tz)
+        current_time = datetime.datetime.now(tz)
         formatted_current_time = current_time.strftime("%b %d, %I:%M %p")
         # formatted_current_time = current_time.strftime("%A, %d %B %Y at %I:%M %p")
         # formatted_current_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
