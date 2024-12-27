@@ -2,9 +2,12 @@ import requests
 import datetime
 import pytz
 from timezonefinder import TimezoneFinder
+import pandas as pd
+import streamlit as st
+
 # Constants
-# API_KEY = st.secrets["general"]["api_key"]
-API_KEY = "a97bfd1e514bbcb662cacbee64cb8eab"
+API_KEY = st.secrets["general"]["api_key"]
+# API_KEY = "a97bfd1e514bbcb662cacbee64cb8eab"
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 BEAUFORT_SCALE_URL = "https://openweathermap.org/themes/openweathermap/assets/vendor/mosaic/data/wind-speed-new-data.json"
 
@@ -44,7 +47,8 @@ def calculate_beaufort_scale(wind_speed):
 def get_weather_location_time(weather_data_coordinators):
     if weather_data_coordinators:
         local_time = datetime.datetime.now()
-        formatted_local_time = local_time.strftime("%A, %d %B %Y at %I:%M %p")
+        # formatted_local_time = local_time.strftime("%A, %d %B %Y at %I:%M %p")
+        formatted_local_time = local_time.strftime("%b %d, %I:%M %p")
 
         # Find timezone
         tf = TimezoneFinder()
@@ -64,3 +68,40 @@ def get_weather_location_time(weather_data_coordinators):
 
     else:
         print("Unable to display weather data.")
+
+
+# flat the weather_data_ data json to simple array of dics
+def reformat_hourly_weather_data(weather_data_):
+    new_list = []
+    for item in weather_data_["hourly"]:
+        new_item = {}
+        for key, value in item.items():
+            if key != 'weather':
+                new_item[key] = value
+            else:
+                new_item.update(value[0])
+        new_list.append(new_item)
+    return new_list
+
+
+def pull_weather_hourly_forecast(weather_data_):
+    params = {
+        "lat": weather_data_['coord']['lat'],
+        "lon": weather_data_['coord']['lon'],
+        "appid": "5796abbde9106b7da4febfae8c44c232",
+        "units": "metric"
+    }
+
+    try:
+        response = requests.get("https://api.openweathermap.org/data/2.5/onecall", params=params)
+        response.raise_for_status()  # Raise an error for HTTP codes 4xx/5xx
+        weather_data = response.json()
+
+        # reformatted weather data json payload
+        hourly_weather_data = reformat_hourly_weather_data(weather_data)
+
+        hourly_weather_df = pd.DataFrame(hourly_weather_data)
+        return hourly_weather_df
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching weather data: {e}")
+        return None
