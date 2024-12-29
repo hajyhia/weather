@@ -7,7 +7,6 @@ import streamlit as st
 
 # Constants
 API_KEY = st.secrets["general"]["api_key"]
-# API_KEY = "a97bfd1e514bbcb662cacbee64cb8eab"
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 BEAUFORT_SCALE_URL = "https://openweathermap.org/themes/openweathermap/assets/vendor/mosaic/data/wind-speed-new-data.json"
 
@@ -47,7 +46,6 @@ def calculate_beaufort_scale(wind_speed):
 def get_weather_location_time(weather_data_coordinators):
     if weather_data_coordinators:
         local_time = datetime.datetime.now()
-        # formatted_local_time = local_time.strftime("%A, %d %B %Y at %I:%M %p")
         formatted_local_time = local_time.strftime("%b %d, %I:%M %p")
 
         # Find timezone
@@ -58,8 +56,6 @@ def get_weather_location_time(weather_data_coordinators):
         tz = pytz.timezone(timezone)
         current_time = datetime.datetime.now(tz)
         formatted_current_time = current_time.strftime("%b %d, %I:%M %p")
-        # formatted_current_time = current_time.strftime("%A, %d %B %Y at %I:%M %p")
-        # formatted_current_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
 
         return {
             "local": {"time": formatted_local_time, "timezone": None},
