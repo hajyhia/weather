@@ -1,12 +1,12 @@
+import datetime
+import math
+import matplotlib.pyplot as plt
+import pytz
 import streamlit as st
 from weather import weather_tools as wt
-import datetime
-import matplotlib.pyplot as plt
-import math
-import os
 
 
-def display_weather(weather_data, local_timezone):
+def display_weather(weather_data, local_timezone, selected_timezone):
     if weather_data:
         city = weather_data["name"]
         country = weather_data["sys"]["country"]
@@ -17,7 +17,7 @@ def display_weather(weather_data, local_timezone):
         humidity = weather_data["main"]["humidity"]
         wind_speed = weather_data["wind"]["speed"]
 
-        weather_location_time = wt.get_weather_location_time(weather_data["coord"])
+        weather_location_time = wt.get_weather_location_time(weather_data["coord"], selected_timezone)
         if local_timezone:
             formatted_time_display = weather_location_time["local"]["time"]
         else:
@@ -26,17 +26,17 @@ def display_weather(weather_data, local_timezone):
         beaufort_scale = wt.calculate_beaufort_scale(wind_speed)
         with st.container(border=True):
             st.html(f"""
-                <div">
+                <div>
                     <div>
                         <span style="color: #de1b2d">{formatted_time_display}</span>
                         <h2 style="margin-top: 0px;">{city}, {country}</h2>
                     </div>
                     <div>
-                        <div style="display:flex; flex-direction:row; white-space:nowrap">
+                        <div class="current-temp" style="display:flex; flex-direction:row; white-space:nowrap">
                             <img src="http://openweathermap.org/img/wn/{weather_icon}@2x.png" width="50px" >
                             <span style="font-size:36px; font-weight:00; margin-right:8pt">{temp}°C</span>
                         </div>
-                        <div style="font-weight:600">Feels like {feels_like}°C. {weather.capitalize()}. {beaufort_scale}</div> 
+                        <div style="font-weight:600">Feels like {feels_like}°C. {weather.capitalize()}. {beaufort_scale}</div>
                     </div>
                 </div>
             """)
@@ -86,25 +86,21 @@ def main():
     with st.form("my_form"):
         # Add input widgets to the form
         city_name = st.text_input("Enter the name of the city:")
-        local_timezone = st.checkbox("Display date and time in the local timezone")
-        store_hourly_forecast = st.checkbox("Store Hourly forecast")
+        selected_timezone = st.selectbox("Choose a timezone:", pytz.all_timezones, 512)
+        display_local_timezone = st.checkbox(f"Display date and time in timezone.")
 
         # Add a submit button
-        submitted = st.form_submit_button("Submit")
+        submitted = st.form_submit_button("Present Weather")
 
     if submitted:
         # Display a personalized message
         if city_name:
             weather_data = wt.fetch_weather(city_name)
-            display_weather(weather_data, local_timezone)
+            display_weather(weather_data, display_local_timezone, selected_timezone)
 
             # render plot chart for hourly forecast
-            hourly_weather_df = wt.pull_weather_hourly_forecast(weather_data)
-            display_weather_hourly_forecast(hourly_weather_df)
-            if store_hourly_forecast:
-                hourly_weather_df.to_csv("hourly_weather_data.csv")
-                if os.path.exists("hourly_weather_data.csv"):
-                    st.success("The Hourly Forecast is stored in hourly_weather_data.csv successfully.")
+            display_weather_hourly_forecast(wt.pull_weather_hourly_forecast(weather_data))
+
         else:
             st.warning("Please enter city name to see the message!")
 
