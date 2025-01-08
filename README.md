@@ -1,14 +1,14 @@
+# Weather App
+
+provides the users an interface to interact and present weather for a any provided location
+- By default, weather data presented in location timezone, unless selected otherwise
+- User can select to present weather data by a selected timezone from dropbox options list
+- Application also present a graph of hourly forcast of the selected location
+
 How To Run Application
 
-Pre-request:
+Application can be found under [Weather App](https://weather-urkwxqslzgelanr2ohm9dn.streamlit.app/)
 
-1.   Subscribe to https://openweathermap.org/city/2988507 and get access token and set under colab secrets **weather_api_key**
-2.   Subscribe to https://dashboard.ngrok.com/ and get access token and set under colab secrets **pyngrok_auth_token**
-
-
-1.   Execute 'Run All'
-2.   Search for '**Public URL:**' under section [4] and Press the public link
-3.   Press on Visit site to navigate to Weather Application
 
 In order to interact with the application
 
@@ -16,5 +16,5 @@ In order to interact with the application
 2.   In order to present time in defferent timzone:
     1. choose timezone
     2. select checkbox 'display date and time' in timezone
-3. Press Submit button  
+3. Press 'Present Weather' button  
  
