@@ -58,13 +58,13 @@ def display_weather_hourly_forecast(df):
     # Create a line plot
     plt.figure(figsize=(8, 4))
     # plt.plot(x, y, color = 'red')
-    plt.plot(x, y, marker='o', linestyle='-', color='orange', label='Line Plot')
+    plt.plot(x, y, marker='o', linestyle='-', color='blue', label='Line Plot')
 
     # Add labels to each point
     for i, label in enumerate(y):
         plt.text(x[i], y[i], f"{label}°", fontsize=10, ha='left', va='bottom')
 
-    plt.xticks(rotation=90)
+    plt.xticks(rotation=45)
 
     labels = list(range(math.floor(min(y)), math.ceil(max(y) + 1), 1))
     plt.yticks(ticks=labels, labels=[f"{s}°" for s in labels])
