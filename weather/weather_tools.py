@@ -6,13 +6,13 @@ import pandas as pd
 import streamlit as st
 
 # Constants
-API_KEY = "a97bfd1e514bbcb662cacbee64cb8eab"
+API_KEY = ""
 # API_KEY = st.secrets["general"]["api_key"]
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 BEAUFORT_SCALE_URL = "https://openweathermap.org/themes/openweathermap/assets/vendor/mosaic/data/wind-speed-new-data.json"
 
-# os.environ["WEATHER_MAP_API_KEY"] = "a97bfd1e514bbcb662cacbee64cb8eab"
-# os.environ["PYNGROK_AUTH_TOKEN"] = "2qcUGt9fCxy5WOjkYKr8jFezsIi_28X6rg2bmAAV3MeUBNWRV"
+# os.environ["WEATHER_MAP_API_KEY"] = ""
+# os.environ["PYNGROK_AUTH_TOKEN"] = ""
 
 def fetch_weather(city_name):
     params = {
